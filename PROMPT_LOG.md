@@ -1,6 +1,6 @@
 # AI Support Statement and Prompt Log
 
-**Student:** YOUR NAME AND STUDENT NUMBER
+**Student:** WASSANYI MARVIN JOHN 26BSCS0104
 **Course:** Enterprise Resource Planning (ERP) Midterm Project
 **AI tool used:** Claude (Anthropic)
 
