@@ -89,4 +89,4 @@ order process work.
 - I ran the website, placed an order, and saw the stock go down and an invoice appear.
 - I took screenshots of the main steps (they are in the `screenshots erp` folder in the repository).
 - I uploaded the project to GitHub and checked that the files and README display correctly.
-- My own changes to the code or design: ADD ANYTHING YOU CHANGED, OR DELETE THIS LINE.
+- My own changes to the code or design:none
