@@ -1,69 +1,92 @@
-# AI Support Statement & Prompt Log
+# AI Support Statement and Prompt Log
 
-**Student:** [YOUR NAME / ID]  **Course:** ERP  **Date:** 10 Oct 2026
-**AI tool used:** Claude (Anthropic), via a chat/coding assistant.
+**Student:** YOUR NAME AND STUDENT NUMBER
+**Course:** Enterprise Resource Planning (ERP) Midterm Project
+**AI tool used:** Claude (Anthropic)
 
 ## AI Support Statement
-I used a generative AI assistant to help me understand the assignment brief, plan the project, generate the
-database schema and Python code, and write automated tests. The AI did not write my final reflection;
-that is written by me. I ran the program, tested the demo flow myself, and I can explain the schema and code.
-The areas below record where the AI was wrong or weak and how that was found and fixed.
+
+I used a generative AI assistant to help me understand the assignment brief, plan the project, and generate the
+database schema, the Python code and the automated tests. The AI did not write my final reflection; I wrote
+that myself. I installed Python, ran the program on my own computer, ran the tests, and used the system to place
+orders, record payments and check that stock and invoices updated. I can explain how the database and the main
+order process work.
 
 ## Prompt log
 
-| # | My prompt (summary) | What the AI did | My action / evaluation |
-|---|---|---|---|
-| 1 | Uploaded the midterm brief: "I have failed to understand, break it down and tell me how we are going to do this." | Summarised the four deliverables, defined terms (ERP, module, single source of truth, CRUD, constraints, BPR) and proposed a plan. | [Write what you checked against the brief] |
-| 2 | Asked what the "prompt" requirement meant, whether screenshots are needed, and Code::Blocks vs VS Code. | Explained the log is a record of prompts, that the brief asks for runnable code (screenshots only as support), and that Code::Blocks targets C/C++ so VS Code + Python is simpler. | [Note if you confirmed submission format with the lecturer] |
-| 3 | Questioned why a retail shop was chosen ("I did not pick up on that anywhere"). | Admitted retail was only one of the brief's examples and was the AI's own suggestion, not a requirement. | I accepted retail because the Sales → Stock → Invoice flow is easy to demonstrate. |
-| 4 | "Go ahead with retail." Asked the AI to build the prototype. | Generated `schema.sql`, `erp.py`, `app.py`, `test_erp.py`, and documentation. | [Write that you installed Python, ran the program and the demo flow] |
+### 1. Understanding the assignment
+- **What I asked:** I uploaded the midterm brief and said I did not understand it. I asked for it to be broken
+  down and for a plan.
+- **What the AI did:** Explained the four deliverables and the key terms (ERP, module, single source of truth,
+  CRUD, constraints, BPR), and suggested a plan.
+- **My check:** I compared the explanation with the original brief.
 
-## Errors, weaknesses and limitations found in the AI's work
+### 2. Questions about the requirements and tools
+- **What I asked:** What the "prompt log" means, whether screenshots are needed, and whether to use Code::Blocks
+  or VS Code.
+- **What the AI did:** Explained that the log is a record of my AI prompts, that the brief asks for runnable code,
+  and that VS Code with Python is simpler than Code::Blocks (which is mainly for C/C++).
 
-1. **Seed data broke the audit trail.** The AI's first version of the sample-data loader inserted opening
-   stock directly without writing `stock_movements` rows. That meant `stock_qty` would never equal the sum
-   of the movement history, which is a data-consistency flaw in a system meant to have a single source of truth.
-   *Found when:* the AI wrote a reconciliation test and noticed it could not meaningfully pass. *Fix:* seed data
-   now logs an opening `RESTOCK` movement for every product.
-2. **A weak test.** The first "consistency" test computed the movement total but never compared it to anything
-   (it only asserted stock was non-negative), so it passed while proving nothing. It was rewritten to assert
-   `stock_qty == SUM(change_qty)` for every product.
-3. **Tooling mistake in running tests.** The AI ran Python with the `-I` (isolated) flag, which caused
-   `ModuleNotFoundError: No module named 'erp'`. This was a mistake in the command, not in the code; re-running
-   normally worked. A reminder that AI-generated commands also need checking.
-4. **Money stored as floating point (`REAL`).** This is poor practice for financial data because of rounding
-   error; the code works around it with a small tolerance when comparing amounts. For a production system the
-   AI's design should use integer amounts or `DECIMAL`. It is listed as a known limitation.
-5. **Missing real-world enterprise logic.** The AI did not include user roles/login, tax, discounts, suppliers or
-   purchase orders, refunds for cancelling a paid order (the system simply refuses), concurrent users, or backups.
-   These are things a real ERP such as SAP or Odoo handles and a prompt-driven prototype does not.
-6. **A recommendation presented as if it were a requirement.** The AI first proposed a retail shop without
-   making clear this was its own choice; I had to question it (prompt 3).
+### 3. Choosing the organization
+- **What I asked:** Why a retail shop was chosen, because I could not find it in the brief.
+- **What the AI did:** Admitted that retail was only one of the brief's examples and was its own suggestion,
+  not a requirement.
+- **My decision:** I accepted a retail shop because the flow from sale to stock to invoice is easy to show.
 
-7. **Changed the interface plan without telling me.** The AI's original plan said "Flask web dashboard", then it
-   built a terminal-only menu without saying so, to avoid installation risk. I only noticed when I ran it in VS Code
-   and expected a website. The AI admitted this and then built `web.py`, a website using only Python's standard
-   library. *Lesson:* check that what an AI delivers matches what it said it would deliver.
-8. **A bug the AI introduced and caught in testing.** In the first draft of `web.py`, a failed payment redirected
-   to a page that does not exist (`/payments`). Found by sending a bad payment during automated testing; fixed to
-   redirect to `/invoices`.
-9. **The AI's own test command killed itself.** A cleanup command (`pkill -f web.py`) matched its own shell and
-   stopped the test run (exit code 144). Re-run in separate steps.
+### 4. Building the prototype
+- **What I asked:** To go ahead and build the prototype.
+- **What the AI did:** Generated the database schema (`schema.sql`), the business logic (`erp.py`), a terminal
+  menu (`app.py`), automated tests (`test_erp.py`) and the documentation.
 
-10. **A display bug found only by looking at the screen.** After a dark-theme change, a screenshot showed a voided
-    (cancelled) invoice with a balance of 7,500, as if the customer still owed it. The database and the summary
-    report were correct; only the invoice table's balance column was wrong. Automated tests had not caught it
-    because they checked data, not what the page displays. Fixed so VOID invoices show a balance of 0.
+### 5. Installing Python and running the project
+- **What I asked:** Step-by-step help to unzip the files, install Python and run the project in VS Code.
+- **What happened:** Python was not installed ("Python was not found"). The installer on my computer used the
+  `py` command instead of `python`. The AI guided me through installing it, and the tests then passed on my
+  own computer.
 
-## Verification I did myself
-- [Ran `python test_erp.py` and saw ALL TESTS PASSED: add date/time]
-- [Ran the demo flow in README: placed an order, saw stock fall and invoice appear]
-- [Tried to break it: ordering more than stock, duplicate phone number, deleting a product with sales]
-- [Anything you changed in the code or schema, and why]
+### 6. Asking for a website
+- **What I asked:** Why I had a terminal menu and not a website.
+- **What the AI did:** Admitted it had changed the plan without telling me, then built a web version (`web.py`)
+  using only Python's standard library, on the same database and rules.
 
-## Further prompts (add every new AI question you ask, in the same format)
-| # | My prompt | AI response summary | My evaluation |
-|---|---|---|---|
-| 5 | Asked why I had no website, then said I was upset. | Admitted the interface change, built `web.py` (dashboard, products, customers, orders, invoices, payments), tested all pages and error cases, and took screenshots to check the layout. | [Write what you checked on the website] |
-| 6 | Asked to discuss colours; chose dark mode; then said it was too dark and wanted lighter, brighter colours. | Applied dark theme, then added a light theme set with an in-page theme switcher (Fresh, Sunny, Sky, Dark). | I compared the themes by looking at screenshots and chose [your choice]. |
-| 7 | | | |
+### 7. Colours and themes
+- **What I asked:** To change the colours. I first chose dark mode, then asked for lighter, brighter colours.
+- **What the AI did:** Added a theme switcher with four themes (Fresh, Sunny, Sky, Dark). I chose the
+  theme I preferred by looking at them.
+
+### 8. Putting the project on GitHub
+- **What I asked:** How to upload my project to GitHub.
+- **What the AI did:** Gave me step-by-step instructions, which I followed to create the repository and upload
+  my files.
+
+## Errors, weaknesses and limitations in the AI's work
+
+1. **Sample data broke the stock audit trail.** The first version of the sample-data loader added opening stock
+   without recording a stock movement, so stock levels could not be reconciled with the movement history.
+   *Found by:* writing a proper reconciliation test. *Fixed:* opening stock is now recorded as a movement.
+2. **A test that proved nothing.** The first consistency test did not compare the numbers it calculated. It was
+   rewritten to check that stock on hand equals the sum of all stock movements for every product.
+3. **A wrong command.** The AI ran Python with a flag that stopped it finding its own files
+   (`ModuleNotFoundError`). The code was fine; the command was wrong. AI-written commands also need checking.
+4. **Money stored as decimals that can round badly (`REAL`).** This is poor practice for financial data. A
+   production system should store whole numbers or use an exact decimal type. It is listed as a known limitation.
+5. **Missing real-world business logic.** The AI did not include user login and roles, tax, discounts, suppliers,
+   purchase orders, refunds for paid orders (the system only refuses to cancel them), several users at once, or
+   backups. A real ERP such as SAP or Odoo handles these.
+6. **A suggestion presented like a requirement.** The AI proposed a retail shop without saying it was only
+   its own choice. I had to question it (entry 3).
+7. **A plan changed without telling me.** The AI said it would build a web dashboard, then built a terminal
+   menu and did not say so. I only noticed when I ran it. Lesson: check that what the AI delivers matches
+   what it said it would deliver.
+8. **A bug in the first website version.** A failed payment sent the user to a page that does not exist.
+   Found while testing a bad payment, and fixed.
+9. **A display bug the tests could not see.** A cancelled order's invoice still showed an amount owed on screen,
+   although the database and summary report were correct. Found by looking at a screenshot of the page, because
+   the automated tests checked data and not the screen. Fixed so cancelled invoices show a balance of 0.
+
+## What I verified myself
+- I ran the automated tests on my own computer and they all passed.
+- I ran the website, placed an order, and saw the stock go down and an invoice appear.
+- I took screenshots of the main steps (they are in the `screenshots erp` folder in the repository).
+- I uploaded the project to GitHub and checked that the files and README display correctly.
+- My own changes to the code or design: ADD ANYTHING YOU CHANGED, OR DELETE THIS LINE.
