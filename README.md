@@ -1,6 +1,6 @@
 # Retail ERP Prototype (Inventory + Sales + Finance)
 
-A small command-line ERP for a retail shop. Three modules share one SQLite database.
+A small ERP for a retail shop, with a web dashboard and a terminal menu. Three modules (Inventory, Sales and Finance) share one SQLite database.
 
 ## Files
 | File | Purpose |
